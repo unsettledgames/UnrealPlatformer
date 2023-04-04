@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "BotCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+class UAnimInstance;
+
 UCLASS()
 class BOTPLATFORMER_API ABotCharacter : public ACharacter
 {
@@ -29,7 +33,19 @@ public:
 	void OnVerticalInput(float val);
 	void OnHorizontalInput(float val);
 
+	void OnCameraRotate(float val);
+	void OnCameraLookUp(float val);
+
+public:
+	UPROPERTY(EditAnywhere)
+	UCameraComponent* Camera;
+	
+	UPROPERTY(EditAnywhere)
+	USpringArmComponent* CameraArm;
+
 private:
 	FVector m_CurrInput;
 
+	UAnimInstance* m_Animation;
+	
 };
