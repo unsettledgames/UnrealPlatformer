@@ -2,6 +2,8 @@
 
 
 #include "BotCharacter.h"
+#include "BotAnimInstance.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Camera/CameraComponent.h"
@@ -28,25 +30,41 @@ ABotCharacter::ABotCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
-
-	USkeletalMeshComponent* mesh;
-	mesh = FindComponentByClass<USkeletalMeshComponent>();
-
-	// TODO: inherit from UAnimationInstance and use it as the blueprint animation
-	if (mesh != nullptr)
-		m_Animation = mesh->GetAnimInstance();
 }
 
 // Called when the game starts or when spawned
 void ABotCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	USkeletalMeshComponent* mesh;
+	mesh = GetMesh();
+
+	if (mesh != nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, mesh->GetName());
+		m_Animation = (UBotAnimInstance*)mesh->GetAnimInstance();
+
+		if (m_Animation == nullptr)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("RIP ANIM"));
+	}
 }
 
 // Called every frame
 void ABotCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UpdateAnimations();
+}
+
+void ABotCharacter::UpdateAnimations()
+{
+	if (m_Animation != nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5., FColor::White, FString::Printf(TEXT("%f"), GetVelocity().Size()));
+		m_Animation->SetSpeed(GetVelocity().Size());
+	}
 }
 
 void ABotCharacter::OnHorizontalInput(float val)

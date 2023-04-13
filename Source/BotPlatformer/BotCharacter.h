@@ -8,7 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
-class UAnimInstance;
+class UBotAnimInstance;
 
 UCLASS()
 class BOTPLATFORMER_API ABotCharacter : public ACharacter
@@ -36,6 +36,9 @@ public:
 	void OnCameraRotate(float val);
 	void OnCameraLookUp(float val);
 
+private:
+	void UpdateAnimations();
+
 public:
 	UPROPERTY(EditAnywhere)
 	UCameraComponent* Camera;
@@ -46,6 +49,5 @@ public:
 private:
 	FVector m_CurrInput;
 
-	UAnimInstance* m_Animation;
-	
+	UBotAnimInstance* m_Animation;
 };
